@@ -10,10 +10,13 @@
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "formidable": "^3.5.2",
-    "next": "15.3.0",
+    "jspdf": "^3.0.1",
+    "next": "^15.3.0",
     "next-auth": "^4.24.11",
+    "openai": "^4.94.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

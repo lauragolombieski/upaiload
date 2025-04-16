@@ -1,16 +1,20 @@
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
 import { writeFile } from 'fs/promises'
 import path from 'path'
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import axios from 'axios'
+import FormData from 'form-data'
+
+const apiKey = 'K81610654988957'
 
 export async function POST(req: Request) {
   try {
-    const formData = await req.formData()
-    const file = formData.get('file') as File
-    const userId = Number(formData.get('userId'))
+    const data = await req.formData()
+    const file = data.get('file')
+    const userId = Number(data.get('userId'))
 
-    if (!file) {
-      return NextResponse.json({ error: 'Nenhum arquivo enviado.' }, { status: 400 })
+    if (!file || !(file instanceof File)) {
+      return NextResponse.json({ error: 'Nenhum arquivo enviado ou arquivo inválido.' }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()
@@ -18,21 +22,33 @@ export async function POST(req: Request) {
 
     const fileName = `${Date.now()}-${file.name}`
     const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
-    const publicUrl = `/uploads/${fileName}`
 
     await writeFile(filePath, buffer)
+    const publicUrl = `/uploads/${fileName}`
 
-    const newDoc = await prisma.document.create({
-      data: {
-        userId,
-        publicUrl: publicUrl,
-        content: 'Conteúdo da imagem',
-        title: 'Nome que a IA vai dar',
-      },
+    const formData = new FormData()
+    formData.append('apikey', apiKey)
+    formData.append('language', 'por')
+    formData.append('file', buffer, fileName)
+
+    const response = await axios.post('https://api.ocr.space/parse/image', formData, {
+      headers: formData.getHeaders(),
     })
 
-    return NextResponse.json({ success: true, document: newDoc })
+    const text = response.data.ParsedResults[0].ParsedText
+
+        await prisma.document.create({
+        data: {
+          userId,
+          publicUrl: publicUrl,
+          content: text || 'Sem texto definido',
+          title: file.name,
+        },
+      })
+
+    return NextResponse.json({ success: true, text })
   } catch (err) {
-    return NextResponse.json({ error: err }, { status: 500 })
+    console.error('Erro no processamento:', err)
+    return NextResponse.json({ error: err.message || 'Erro desconhecido' }, { status: 500 })
   }
 }

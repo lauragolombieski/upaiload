@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-    output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -16,20 +16,21 @@ model User {
 }
 
 model Document {
-  id         Int       @id @default(autoincrement())
-  userId     Int
-  user       User      @relation(fields: [userId], references: [id])
-  publicUrl  String
-  content    String
-  title      String
-  createdAt  DateTime  @default(now())
-  histories  History[]
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  publicUrl String
+  content   String
+  title     String
+  resume    String    @default("Sem escritas")
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  histories History[]
 }
 
 model History {
-  id          Int       @id @default(autoincrement())
-  documentId  Int
-  document    Document  @relation(fields: [documentId], references: [id])
-  messages    String
-  createdAt   DateTime  @default(now())
+  id         Int      @id @default(autoincrement())
+  documentId Int
+  messages   String
+  createdAt  DateTime @default(now())
+  document   Document @relation(fields: [documentId], references: [id])
 }
