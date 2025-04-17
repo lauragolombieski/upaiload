@@ -51,7 +51,7 @@ export default function FileUpload() {
       setMessage('❌ Falha na conexão durante o upload.');
     };
   
-    xhr.open('POST', 'http://localhost:3001/api/document/upload');
+    xhr.open('POST', `${process.env.NEXT_PUBLIC_API_URL}/api/document/upload`);
     xhr.setRequestHeader('Accept', 'application/json');  
     xhr.send(formData);
   };
