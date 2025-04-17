@@ -22,7 +22,7 @@ export default function SelectableCard({
   selecionado = false,
   onSelect,
 }: CardProps) {
-  const imagemSrc = imagem || '/images/exemplo1.jpg'
+  const imagemSrc = imagem || ''
   const [visibleMessages, setVisibleMessages] = useState<{ role: string; content: string }[]>([])
   const [chatOpen, setChatOpen] = useState(false)
   const hiddenMessages = [
