@@ -46,12 +46,11 @@ export default function SelectableCard({
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         })
-
-        if (res.body?.locked) return
-
+    
         const data = await res.json()
+        if(data.vazio) {return}
+
         setVisibleMessages(JSON.parse(data.messages))
-        
     } catch (error) {
       console.error('Erro ao carregar histórico do chat:', error)
     }
@@ -61,6 +60,7 @@ export default function SelectableCard({
 
   const handleCloseChat = async () => {
     if (!visibleMessages.length) {
+      setChatOpen(false);
       return;
     }
   
