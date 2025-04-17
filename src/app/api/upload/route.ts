@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     await writeFile(filePath, buffer)
 
     return NextResponse.json({ success: true, filePath: `/images/${fileName}` })
-  } catch (err: any) {
-    return NextResponse.json({ error: 'Erro desconhecido' })
+  } catch (e) {
+    return NextResponse.json({ error: e })
   }
 }
