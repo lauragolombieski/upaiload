@@ -23,7 +23,7 @@ export default function HistoryPage() {
   const handleDelete = async () => {
     if (confirm('Tem certeza que deseja excluir os uploads selecionados?')) {
       try {
-        const resp = await fetch('http://localhost:3001/api/document', {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/document`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ selectedDocuments, id: session?.user?.id }),
@@ -53,7 +53,7 @@ export default function HistoryPage() {
       setMessage('')
 
       try {
-        const res = await fetch('http://localhost:3001/api/document/' + session?.user?.id, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/document/` + session?.user?.id, {
           method: 'GET', 
           headers: { 'Content-Type': 'application/json' }
         })

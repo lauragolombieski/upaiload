@@ -42,7 +42,7 @@ export default function SelectableCard({
   const fetchHistory = async () => {
     if (visibleMessages.length > 0) {return}
       try {
-        const res = await fetch('http://localhost:3001/api/chat/history/' + id, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/history/` + id, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         })
@@ -65,7 +65,7 @@ export default function SelectableCard({
     }
   
     try {
-      const response = await fetch("http://localhost:3001/api/chat/history", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat/history`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@ export default function SelectableCard({
     setLoading(true)
   
     try {
-      const res = await fetch('http://localhost:3001/api/chat', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
