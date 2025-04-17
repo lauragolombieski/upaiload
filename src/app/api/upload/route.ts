@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { writeFile } from 'fs/promises'
 import path from 'path'
+import os from 'os';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const uploadDir = path.join(process.cwd(), 'public', 'images')
+    const uploadDir = path.join(os.tmpdir(), 'images', fileName as string);
     const filePath = path.join(uploadDir, fileName)
     await writeFile(filePath, buffer)
 
