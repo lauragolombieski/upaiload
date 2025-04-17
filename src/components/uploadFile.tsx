@@ -18,9 +18,16 @@ export default function FileUpload() {
     setMessage('');
   
     const formData = new FormData();
+    const fileName = `${Date.now()}-${file.name}`
     formData.append('file', file);
-    formData.append('userId', session?.user?.id);
-  
+    formData.append('id', session?.user?.id);
+    formData.append('fileName', fileName);
+
+    await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
     const xhr = new XMLHttpRequest();
   
     xhr.upload.onprogress = (event) => {
@@ -32,7 +39,7 @@ export default function FileUpload() {
 
     xhr.onload = () => {
       setUploading(false);
-      if (xhr.status === 200) {
+      if (xhr.status === 200 || xhr.status === 201) {
         setMessage('😎🚀 Upload feito com sucesso!');
       } else {
         setMessage('😞 Ocorreu um erro no upload.');
@@ -44,8 +51,8 @@ export default function FileUpload() {
       setMessage('❌ Falha na conexão durante o upload.');
     };
   
-    xhr.open('POST', '/api/upload');
-    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.open('POST', 'http://localhost:3001/api/document/upload');
+    xhr.setRequestHeader('Accept', 'application/json');  
     xhr.send(formData);
   };
 

@@ -12,25 +12,4 @@ model User {
   id        Int        @id @default(autoincrement())
   email     String     @unique
   password  String
-  documents Document[]
-}
-
-model Document {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  publicUrl String
-  content   String
-  title     String
-  resume    String    @default("Sem escritas")
-  createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id])
-  histories History[]
-}
-
-model History {
-  id         Int      @id @default(autoincrement())
-  documentId Int
-  messages   String
-  createdAt  DateTime @default(now())
-  document   Document @relation(fields: [documentId], references: [id])
 }

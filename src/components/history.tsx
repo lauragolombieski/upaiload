@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import jsPDF from "jspdf";
+import { useSession } from "next-auth/react";
 
 interface CardProps {
   id: number
@@ -23,7 +24,7 @@ export default function SelectableCard({
 }: CardProps) {
   const imagemSrc = imagem || '/images/exemplo1.jpg'
   const [visibleMessages, setVisibleMessages] = useState<{ role: string; content: string }[]>([])
-  const [showChat, setShowChat] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
   const hiddenMessages = [
     {
       role: 'system',
@@ -36,6 +37,55 @@ export default function SelectableCard({
   ]
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const { data: session } = useSession();
+
+  const fetchHistory = async () => {
+    if (visibleMessages.length > 0) {return}
+      try {
+        const res = await fetch('http://localhost:3001/api/chat/history/' + id, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        })
+
+        if (res.body?.locked) return
+
+        const data = await res.json()
+        setVisibleMessages(JSON.parse(data.messages))
+        
+    } catch (error) {
+      console.error('Erro ao carregar histórico do chat:', error)
+    }
+  }
+
+  fetchHistory()
+
+  const handleCloseChat = async () => {
+    if (!visibleMessages.length) {
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:3001/api/chat/history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id,
+          documentId: id,
+          messages: visibleMessages,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erro ao salvar o histórico de mensagens.");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar o histórico:", error);
+    } finally {
+      setChatOpen(false);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
@@ -47,11 +97,11 @@ export default function SelectableCard({
     setLoading(true)
   
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...hiddenMessages, ...newVisible],
+          messages: [...hiddenMessages, ...newVisible, session?.user?.id],
         }),
       })
   
@@ -70,7 +120,6 @@ export default function SelectableCard({
     }
   }
   
-
   return (
     <div
       onClick={onSelect}
@@ -95,13 +144,13 @@ export default function SelectableCard({
         className="cursor-pointer mt-4 mx-auto bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-6 rounded-xl transition-all duration-300 shadow-md block"
         onClick={(e) => {
           e.stopPropagation()
-          setShowChat(true)
+          setChatOpen(true)
         }}
       >
         Pesquisar
       </button>
 
-      {showChat && (
+      {chatOpen && (
         <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-4 rounded-xl z-10 shadow-lg">
           <div className="flex justify-between items-center">
             <h4 className="text-sky-700 font-semibold">Faça sua pergunta!</h4>
@@ -133,7 +182,7 @@ export default function SelectableCard({
             >
               📤
             </button>
-            <button onClick={() => setShowChat(false)}>❌</button>
+            <button onClick={() => handleCloseChat()}>❌</button>
           </div>
 
           <div className="h-55 overflow-y-auto border p-2 mb-2 rounded bg-gray-50 border-gray-300 text-sm">

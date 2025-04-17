@@ -24,10 +24,12 @@ export default function CreateAccountForm() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      if (res.status == 409) {
+        throw new Error('Usuário já existe.');
+      }
 
-      if (!res.ok) {
-        throw new Error('Erro ao criar conta');
+      if (res.status == 400) {
+        throw new Error('Email e senha são obrigatórios.');
       }
 
       setMessage('Conta criada com sucesso!');

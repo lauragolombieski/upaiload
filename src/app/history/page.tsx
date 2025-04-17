@@ -8,11 +8,11 @@ import jsPDF from "jspdf";
 
 export default function HistoryPage() {
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([])
-  const [documents, setDocuments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [documents, setDocuments] = useState<any[]>([])
 
   const handleSelect = (id: number) => {
     setSelectedDocuments(prev =>
@@ -21,63 +21,24 @@ export default function HistoryPage() {
   }
 
   const handleDelete = async () => {
-
     if (confirm('Tem certeza que deseja excluir os uploads selecionados?')) {
       try {
-        const resp = await fetch('/api/delete', {
+        const resp = await fetch('http://localhost:3001/api/document', {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ selectedDocuments }),
+          body: JSON.stringify({ selectedDocuments, id: session?.user?.id }),
         });
 
-        if(resp.status == 200) {
-          window.location.reload()
+        if (resp.status == 200) {
+          window.location.reload();
         }
       } catch (error) {
-        setMessage('Falha ao excluir uploads.')
+        setMessage('Falha ao excluir uploads.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
   }
-
-  const handleCloseChat = async () => {
-    await fetch("/api/history", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        documentId: selectedDocumentId,
-        messages: chatMessages, // array de mensagens
-      }),
-    });
-  
-    setChatOpen(false); // ou qualquer lógica para fechar a interface do chat
-  };
-
-const handleDownload = () => {
-  const doc = new jsPDF();
-  const lineHeight = 10;
-  const maxLinesPerPage = 25; // Aproximadamente (depende do tamanho da fonte)
-  let lineCount = 0;
-  let page = 1;
-
-  chatMessages.forEach((msg, index) => {
-    const text = `${msg.role === "user" ? "Usuário" : "Assistente"}: ${msg.content}`;
-
-    if (lineCount >= maxLinesPerPage) {
-      doc.addPage();
-      lineCount = 0;
-      page++;
-    }
-
-    doc.text(text, 10, 10 + lineCount * lineHeight);
-    lineCount++;
-  });
-
-  doc.save("conversa.pdf");
-};
 
   useEffect(() => {
     if (status === 'loading') return
@@ -92,11 +53,18 @@ const handleDownload = () => {
       setMessage('')
 
       try {
-        const res = await fetch('/api/history')
-        if (!res.ok) throw new Error('Erro ao buscar histórico')
-        const data = await res.json()
-        setDocuments(data)
+        const res = await fetch('http://localhost:3001/api/document/' + session?.user?.id, {
+          method: 'GET', 
+          headers: { 'Content-Type': 'application/json' }
+        })
 
+        const data = await res.json();
+        
+        if (Array.isArray(data)) {
+          setDocuments(data);
+        } else {
+          setMessage('Formato de dados inesperado');
+        }
       } catch (error) {
         setMessage('Falha ao carregar histórico.')
       } finally {
@@ -122,17 +90,17 @@ const handleDownload = () => {
       <div className="flex flex-wrap gap-4 justify-center">
         {!loading && documents.length === 0 && <p className="text-sm text-red-600">Nenhum documento encontrado.</p>}
         {!loading && documents.length > 0 &&
-        documents.map(doc => (
-          <History
-            key={doc.id}
-            id={doc.id}
-            imagem={doc.publicUrl}
-            titulo={doc.title}
-            descricao={doc.content}
-            selecionado={selectedDocuments.includes(doc.id)}
-            onSelect={() => handleSelect(doc.id)}
-          />
-        ))}
+          documents.map(doc => (
+            <History
+              key={doc.id}
+              id={doc.id}
+              imagem={doc.publicUrl}
+              titulo={doc.title}
+              descricao={doc.content}
+              selecionado={selectedDocuments.includes(doc.id)}
+              onSelect={() => handleSelect(doc.id)}
+            />
+          ))}
       </div>
 
       {selectedDocuments.length > 0 && (
@@ -145,7 +113,6 @@ const handleDownload = () => {
           </button>
         </div>
       )}
-
     </main>
   )
 }
