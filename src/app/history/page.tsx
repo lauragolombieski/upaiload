@@ -11,7 +11,12 @@ export default function HistoryPage() {
   const [message, setMessage] = useState('')
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [documents, setDocuments] = useState<any[]>([])
+  type Document = {
+    id: string;
+    name: string;
+    createdAt: string;
+  };
+  const [documents, setDocuments] = useState<Document[]>([])
 
   const handleSelect = (id: number) => {
     setSelectedDocuments(prev =>
