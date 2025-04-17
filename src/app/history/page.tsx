@@ -12,6 +12,9 @@ export default function HistoryPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   type Document = {
+    publicUrl: string;
+    title: string;
+    content: string;
     id: number;
     name: string;
     createdAt: string;
