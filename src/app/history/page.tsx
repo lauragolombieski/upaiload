@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import History from '@/components/history'
 import { useSession } from 'next-auth/react'
-import jsPDF from "jspdf";
 
 export default function HistoryPage() {
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([])
@@ -33,7 +32,7 @@ export default function HistoryPage() {
           window.location.reload();
         }
       } catch (error) {
-        setMessage('Falha ao excluir uploads.');
+        setMessage('Falha ao excluir uploads. ' + error);
       } finally {
         setLoading(false);
       }
@@ -66,7 +65,7 @@ export default function HistoryPage() {
           setMessage('Formato de dados inesperado');
         }
       } catch (error) {
-        setMessage('Falha ao carregar histórico.')
+        setMessage('Falha ao carregar histórico.' + error)
       } finally {
         setLoading(false)
       }
@@ -81,7 +80,7 @@ export default function HistoryPage() {
         Histórico de Imagens Enviadas
       </h1>
       <h2 className="text-gray-600 text-lg mb-6 text-center">
-        Encontre aqui mais informações sobre suas imagens enviadas e utilize o botão "Consultar" para falar com a Íris, nossa assistente de IA.
+        Encontre aqui mais informações sobre suas imagens enviadas e utilize o botão Consultar para falar com a &quot;Íris&quot;, nossa assistente de IA.
       </h2>
 
       {loading && <p className="text-gray-600 text-lg mb-6 text-center">Carregando documentos...</p>}
