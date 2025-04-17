@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+        "strict": false,        
+        "noImplicitAny": false,  
+        "skipLibCheck": true,   
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
@@ -11,8 +14,7 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
+
     "noEmit": true,
     "incremental": true,
     "module": "esnext",

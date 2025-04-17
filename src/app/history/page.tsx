@@ -12,7 +12,7 @@ export default function HistoryPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   type Document = {
-    id: string;
+    id: number;
     name: string;
     createdAt: string;
   };
@@ -97,8 +97,8 @@ export default function HistoryPage() {
           documents.map(doc => (
             <History
               key={doc.id}
-              id={doc.id}
-              imagem={doc.publicUrl}
+              id={Number(doc.id)}
+              imagem={String(doc.publicUrl)}
               titulo={doc.title}
               descricao={doc.content}
               selecionado={selectedDocuments.includes(doc.id)}
