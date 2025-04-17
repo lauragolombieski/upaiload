@@ -11,15 +11,27 @@ export const authOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Senha", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         const user = await prisma.user.findUnique({
           where: { email: credentials?.email || "" },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+          },
         });
-
-        if (user && user.password && await bcrypt.compare(credentials?.password || '', user.password)) {
-          return { id: user.id, email: user.email, name: user.name }; // Certifique-se de retornar o 'id' aqui
+      
+        if (
+          user &&
+          user.password &&
+          await bcrypt.compare(credentials?.password || "", user.password)
+        ) {
+          return {
+            id: String(user.id),
+            email: user.email,
+          };
         }
-
+      
         return null;
       },
     }),
