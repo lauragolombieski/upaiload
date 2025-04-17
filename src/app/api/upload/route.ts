@@ -20,6 +20,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, filePath: `/uploads/${fileName}` })
   } catch (err: any) {
-    return NextResponse.json({ 'Erro desconhecido' })
+    return NextResponse.json({ error: 'Erro desconhecido' })
   }
 }
