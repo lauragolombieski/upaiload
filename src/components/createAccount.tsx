@@ -35,8 +35,8 @@ export default function CreateAccountForm() {
       setMessage('Conta criada com sucesso!');
       setEmail('');
       setPassword('');
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: unknown) {
+      setMessage((err as Error).message);
     } finally {
       setLoading(false);
     }
