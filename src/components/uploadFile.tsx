@@ -64,6 +64,7 @@ export default function FileUpload() {
 
         <input
           type="file"
+          aria-label="Selecionar imagem"
           accept="image/*"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
           className="block w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
