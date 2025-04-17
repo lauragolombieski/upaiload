@@ -30,7 +30,7 @@ export default function HistoryPage() {
         const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/document`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ selectedDocuments, id: session?.user?.id }),
+          body: JSON.stringify({ selectedDocuments, id: session?.user?.id! }),
         });
 
         if (resp.status == 200) {

@@ -1,3 +1,4 @@
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
@@ -16,17 +17,13 @@ export const authOptions = {
         });
 
         if (user && user.password && await bcrypt.compare(credentials?.password || '', user.password)) {
-          return { id: user.id, email: user.email };
+          return { id: user.id, email: user.email, name: user.name }; // Certifique-se de retornar o 'id' aqui
         }
 
         return null;
       },
     }),
   ],
-  pages: {
-    signIn: "/auth/login",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -41,4 +38,8 @@ export const authOptions = {
       return session;
     },
   },
+  pages: {
+    signIn: "/auth/login",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
