@@ -128,7 +128,7 @@ export default function SelectableCard({
       }`}
     >
       <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden">
-        <Image
+        <img
           src={imagemSrc}
           alt={titulo}
           width={400}
