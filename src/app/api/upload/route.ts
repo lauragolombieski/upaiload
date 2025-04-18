@@ -15,10 +15,9 @@ export async function POST(req: Request) {
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-    const uploadDir = path.join(os.tmpdir(), 'images', fileName as string);
+    const uploadDir = path.join(process.cwd(), 'public', 'images')
     const filePath = path.join(uploadDir, fileName)
     await writeFile(filePath, buffer)
-
     return NextResponse.json({ success: true, filePath: `/images/${fileName}` })
   } catch (e) {
     return NextResponse.json({ error: e })
