@@ -23,11 +23,6 @@ export default function FileUpload() {
     formData.append('id', session?.user?.id);
     formData.append('fileName', fileName);
 
-    await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
     const xhr = new XMLHttpRequest();
   
     xhr.upload.onprogress = (event) => {

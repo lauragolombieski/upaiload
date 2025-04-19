@@ -22,7 +22,6 @@ export default function SelectableCard({
   selecionado = false,
   onSelect,
 }: CardProps) {
-  const imagemSrc = imagem || ''
   const [visibleMessages, setVisibleMessages] = useState<{ role: string; content: string }[]>([])
   const [chatOpen, setChatOpen] = useState(false)
   const hiddenMessages = [
@@ -129,7 +128,7 @@ export default function SelectableCard({
     >
       <div className="relative w-full h-48 mb-6 rounded-xl overflow-hidden">
         <img
-          src={imagemSrc}
+          src={imagem}
           alt={titulo}
           width={400}
           height={200}

@@ -101,7 +101,7 @@ export default function HistoryPage() {
             <History
               key={doc.id}
               id={Number(doc.id)}
-              imagem={String(doc.publicUrl)}
+              imagem={`${process.env.NEXT_PUBLIC_API_URL}/api/document/${doc.id}/image`}
               titulo={doc.title}
               descricao={doc.content}
               selecionado={selectedDocuments.includes(doc.id)}
