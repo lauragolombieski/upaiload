@@ -11,3 +11,4 @@ npm run dev
 
 Abra em seu browser: [http://localhost:3000](http://localhost:3000).
 
+Você pode verificar o projeto rodando em: https://upaiload-production.up.railway.app/
